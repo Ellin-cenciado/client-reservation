@@ -1,7 +1,6 @@
 package com.reservation.admin.service;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,10 +23,7 @@ public class ReservationService implements IReservationService{
     public Reservation findReservationById(Integer ReservationId) {
         return ReservationRepository.findById(ReservationId).orElse(null);
     }
-    @Override
-    public Reservation findReservationByUUID(UUID uuid){
-        return ReservationRepository.findReservationByUUID(uuid);
-    }
+    
 
     @Override
     public Reservation saveReservation(Reservation reservation) {
@@ -42,12 +38,6 @@ public class ReservationService implements IReservationService{
     @Override
     public void deleteReservationById(Integer id){
         ReservationRepository.deleteById(id);
-    }
-
-    @Override
-    public void deleteReservationByUUID(UUID uuid) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteReservationByUUID'");
     }
     
 }

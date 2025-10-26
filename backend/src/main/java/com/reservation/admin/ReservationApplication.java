@@ -7,19 +7,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
+@EntityScan(basePackages = "com.reservation.common.model")
 public class ReservationApplication implements CommandLineRunner {
 
     @Autowired
-    private IReservationService noteService;
+    private IReservationService reservationService;
     private static final Logger logger = LoggerFactory.getLogger(ReservationApplication.class);
 
     public static void main(String[] args) {
 
-        logger.info("Initializing Notes Application");
+        logger.info("Initializing Reservation Application");
         SpringApplication.run(ReservationApplication.class,args);
-        logger.info("Notes Application started successfully");
+        logger.info("Reservation Application started successfully");
     }
 
     @Override
@@ -28,9 +30,9 @@ public class ReservationApplication implements CommandLineRunner {
         notesApp();
     }
     public void notesApp(){
-        System.out.println("Welcome to Notes Application");
-        logger.info("Total notes: " + noteService.listReservations().size());
-        logger.info("Notes= \n" + noteService.listReservations());
+        System.out.println("Welcome to Reservation Application");
+        logger.info("Total reservations: " + reservationService.listReservations().size());
+        logger.info("Reservations= \n" + reservationService.listReservations());
 
         while(true){
             // Infinite loop to keep the application running

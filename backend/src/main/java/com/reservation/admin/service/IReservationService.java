@@ -1,16 +1,13 @@
 package com.reservation.admin.service;
 
 import java.util.List;
-import java.util.UUID;
 
 import com.reservation.common.model.Reservation;
 
 public interface IReservationService {
     public List<Reservation> listReservations();
     public Reservation findReservationById(Integer reservationId);
-    public Reservation findReservationByUUID(UUID uuid);
     public Reservation saveReservation(Reservation reservation);
-    public void deleteReservationByUUID(UUID uuid);
     public void deleteReservationById(Integer id);
     public void deleteReservation(Reservation reservation);
 
