@@ -1,42 +1,32 @@
 package com.reservation.admin;
 
-import com.reservation.admin.service.IReservationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.reservation.admin.gui.Form;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ConfigurableApplicationContext;
+
+import javax.swing.*;
 
 @SpringBootApplication
-@EntityScan(basePackages = "com.reservation.common.model")
-public class ReservationApplication implements CommandLineRunner {
-
-    @Autowired
-    private IReservationService reservationService;
-    private static final Logger logger = LoggerFactory.getLogger(ReservationApplication.class);
+@EntityScan(basePackages = {"com.reservation.common.model"})
+public class ReservationApplication {
 
     public static void main(String[] args) {
+        FlatDarculaLaf.setup();
 
-        logger.info("Initializing Reservation Application");
-        SpringApplication.run(ReservationApplication.class,args);
-        logger.info("Reservation Application started successfully");
+        ConfigurableApplicationContext springContext = new SpringApplicationBuilder(ReservationApplication.class)
+                .headless(false)
+                .web(WebApplicationType.NONE)
+                .run(args);
+
+        SwingUtilities.invokeLater(() -> {
+            Form reservationForm = springContext.getBean(Form.class);
+            reservationForm.setVisible(true);
+        });
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-        logger.info("CommandLineRunner executed");
-        notesApp();
-    }
-    public void notesApp(){
-        System.out.println("Welcome to Reservation Application");
-        logger.info("Total reservations: " + reservationService.listReservations().size());
-        logger.info("Reservations= \n" + reservationService.listReservations());
 
-        while(true){
-            // Infinite loop to keep the application running
-        }
-
-    }
 }

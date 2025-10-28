@@ -7,37 +7,42 @@ import org.springframework.stereotype.Service;
 
 import com.reservation.common.model.Reservation;
 import com.reservation.admin.repository.ReservationRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ReservationService implements IReservationService{
 
     @Autowired
-    private ReservationRepository ReservationRepository;
+    private ReservationRepository reservationRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Reservation> listReservations() {
-        return ReservationRepository.findAll();
+        List<Reservation> reservations = reservationRepository.findAll();
+        // Force initialization while session is still open
+        reservations.forEach(r -> r.getWorks().size());
+        return reservations;
     }
 
     @Override
     public Reservation findReservationById(Integer ReservationId) {
-        return ReservationRepository.findById(ReservationId).orElse(null);
+        return reservationRepository.findById(ReservationId).orElse(null);
     }
     
 
     @Override
     public Reservation saveReservation(Reservation reservation) {
-    return ReservationRepository.save(reservation);
+    return reservationRepository.save(reservation);
 }
 
     @Override
     public void deleteReservation(Reservation Reservation) {
-        ReservationRepository.delete(Reservation);
+        reservationRepository.delete(Reservation);
     }
     
     @Override
     public void deleteReservationById(Integer id){
-        ReservationRepository.deleteById(id);
+        reservationRepository.deleteById(id);
     }
     
 }

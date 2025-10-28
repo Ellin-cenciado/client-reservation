@@ -21,20 +21,33 @@ import lombok.ToString;
 @EqualsAndHashCode(exclude = "works")
 
 public class Reservation {
+
     public enum Work {
-    TATTOO,
-    PIERCING,
-    REVISION,
-    CHANGE,
-    OTHER
-}
+        PIERCING("Piercing"),
+        TATTOO("Tattoo"),
+        REVISION("Revision"),
+        CHANGE("Change"),
+        OTHER("Other");
+
+        private final String displayName;
+
+        Work(String displayName) {
+            this.displayName = displayName;
+        }
+
+        @Override
+        public String toString() {
+            return displayName;
+        }
+    }
     @Id
     
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
-
-    
     private UUID uuid;
+    private String name;
+    private String surname;
+
     @Column(name = "workamount")
     private Integer worksAmount;
 
@@ -47,8 +60,6 @@ public class Reservation {
 
     @Column(name = "dateday")
     private Date dateDay;
-    private String name;
-    private String surname;
 
     @Email
     private String email;
