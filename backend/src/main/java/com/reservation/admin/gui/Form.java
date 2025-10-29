@@ -51,6 +51,7 @@ public class Form extends JFrame {
     }
 
     private void initializeForm(){
+
         setContentPane(Container);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
@@ -59,7 +60,6 @@ public class Form extends JFrame {
 
     private void createUIComponents() {
         this.workSelectorRows = new ArrayList<>();
-
         // Table setup
         this.reservationTableModel = new DefaultTableModel(0, 4){
             @Override
