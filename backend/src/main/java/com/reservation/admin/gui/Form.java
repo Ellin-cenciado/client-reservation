@@ -44,8 +44,10 @@ public class Form extends JFrame {
 
     @Autowired
     public Form(ReservationService reservationService){
+        System.out.println("Form constructor called at: " + System.currentTimeMillis());
         this.reservationService = reservationService;
         initializeForm();
+        listReservations();
 
         addWorkButton.addActionListener(e -> addWorkSelector());
     }
@@ -86,7 +88,6 @@ public class Form extends JFrame {
         this.workScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         this.workScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        listReservations();
     }
 
     private void addInitialWorkSelector() {

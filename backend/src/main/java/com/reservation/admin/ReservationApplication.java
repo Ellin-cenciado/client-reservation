@@ -15,13 +15,14 @@ import javax.swing.*;
 public class ReservationApplication {
 
     public static void main(String[] args) {
+        System.out.println("Application starting: " + System.currentTimeMillis());
         FlatDarculaLaf.setup();
 
         ConfigurableApplicationContext springContext = new SpringApplicationBuilder(ReservationApplication.class)
                 .headless(false)
                 .web(WebApplicationType.NONE)
                 .run(args);
-
+        System.out.println("Spring context ready: " + System.currentTimeMillis());
         SwingUtilities.invokeLater(() -> {
             Form reservationForm = springContext.getBean(Form.class);
             reservationForm.setVisible(true);
