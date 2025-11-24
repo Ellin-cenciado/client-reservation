@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import com.reservation.common.converter.WorkListConverter;
+import org.hibernate.annotations.Type;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -51,8 +53,8 @@ public class Reservation {
     @Column(name = "workamount")
     private Integer worksAmount;
 
-    @ElementCollection(targetClass = Work.class)
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = WorkListConverter.class)
+    @Column(name = "works")
     private List<Work> works;
     
     @Column(name = "timestamp")
@@ -66,4 +68,5 @@ public class Reservation {
 
     @Column(name = "assistanceconfirmation")
     private Boolean assistanceConfirmation;
+
 }
