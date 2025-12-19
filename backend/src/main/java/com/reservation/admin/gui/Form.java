@@ -3,8 +3,10 @@ package com.reservation.admin.gui;
 import com.reservation.admin.service.IReservationService;
 import com.reservation.admin.service.ReservationService;
 import com.reservation.common.model.Reservation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.apache.commons.validator.routines.EmailValidator;
 import raven.datetime.DatePicker;
 import raven.datetime.TimePicker;
 
@@ -25,9 +27,10 @@ import java.util.*;
 import java.util.List;
 
 
+@Slf4j
 @Component
 public class Form extends JFrame {
-    private JPanel Container;
+    private JPanel container;
     private JTable tableReservation;
     private DefaultTableModel reservationTableModel;
     private JPanel tableWrapper;
@@ -50,6 +53,8 @@ public class Form extends JFrame {
     private TimePicker timePicker;
     private JLabel confirmationLabel;
     private JCheckBox confirmedAssistanceCheckBox;
+    private JButton deleteButton;
+    private JButton clearButton;
     private IReservationService reservationService;
     private List<WorkSelectorRow> workSelectorRows;
 
@@ -64,7 +69,8 @@ public class Form extends JFrame {
 
         addWorkButton.addActionListener(e -> addWorkSelector());
         submit.addActionListener(e -> handleSubmit());
-
+        deleteButton.addActionListener(e -> handleDelete());
+        clearButton.addActionListener(e -> clearForm());
         tableReservation.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -75,7 +81,7 @@ public class Form extends JFrame {
     }
 
     private void initializeForm(){
-        setContentPane(Container);
+        setContentPane(container);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 700);
         setLocationRelativeTo(null);
@@ -86,6 +92,7 @@ public class Form extends JFrame {
         this.workSelectorRows = new ArrayList<>();
         // Table setup
         this.reservationTableModel = new DefaultTableModel(0, 6){
+
             @Override
             public boolean isCellEditable(int row, int column){
                 return false;
@@ -93,16 +100,12 @@ public class Form extends JFrame {
 
             @Override
             public Class<?> getColumnClass(int columnIndex){
-                switch (columnIndex){
-                    case 0:
-                        return Integer.class;
-                    case 3:
-                        return java.util.ArrayList.class;
-                    case 5:
-                        return java.sql.Timestamp.class;
-                    default:
-                        return String.class;
-                }
+                return switch (columnIndex) {
+                    case 0 -> Integer.class;
+                    case 3 -> ArrayList.class;
+                    case 5 -> java.sql.Timestamp.class;
+                    default -> String.class;
+                };
             }
         };
 
@@ -239,7 +242,7 @@ public class Form extends JFrame {
                     reservation.getWorks(),
                     reservation.getEmail(),
                     reservation.getDateDay(),
-                    (reservation.getAssistanceConfirmation() ? "Si" : "No")
+                    (reservation.getAssistanceConfirmation() ? "Si" : "No"),
             };
             System.out.println(Arrays.toString(reservationRow));
             this.reservationTableModel.addRow(reservationRow);
@@ -350,66 +353,137 @@ public class Form extends JFrame {
     }
 
     private void handleSubmit(){
-//        try{
-//            if(!validateInputs()){
-//                return;
-//            }
+            boolean validation = validateInputs();
 
-        LocalDate selectedDate = datePicker.getSelectedDate();
-        LocalTime selectedTime = timePicker.getSelectedTime();
-        LocalDateTime reservationDateTime = LocalDateTime.of(selectedDate, selectedTime);
+            if(validation){
+                LocalDate selectedDate = datePicker.getSelectedDate();
+                LocalTime selectedTime = timePicker.getSelectedTime();
+                LocalDateTime reservationDateTime = LocalDateTime.of(selectedDate, selectedTime);
 
-        Date reservationDate = Date.from(
-                reservationDateTime.atZone(ZoneId.systemDefault()).toInstant()
-        );
+                Date reservationDate = Date.from(
+                        reservationDateTime.atZone(ZoneId.systemDefault()).toInstant()
+                );
 
-            Reservation reservation = new Reservation();
-            reservation.setId(this.idReservation);
-            reservation.setName(nameField.getText());
-            reservation.setSurname(surnameField.getText());
-            reservation.setEmail(emailField.getText());
-            reservation.setWorks(getSelectedWorks());
-            reservation.setCreationDate(new Date());
-            reservation.setDateDay(reservationDate);
-            reservation.setUuid(UUID.randomUUID());
-            reservation.setAssistanceConfirmation(confirmedAssistanceCheckBox.isSelected());
-        String message = String.format("""
-        New reservation for: %s, %s
-        Email: %s
-        Works to get done: %s
-        Created at: %tF at %tT
-        Reservation date: %tF at %tT
-        """,
-                reservation.getName(),
-                reservation.getSurname(),
-                reservation.getEmail(),
-                reservation.getWorks(),
-                reservation.getCreationDate(),
-                reservation.getCreationDate(),
-                reservationDate,
-                reservationDate);
+                Reservation reservation = new Reservation();
+                reservation.setId(this.idReservation);
+                reservation.setName(nameField.getText());
+                reservation.setSurname(surnameField.getText());
+                reservation.setEmail(emailField.getText());
+                reservation.setWorks(getSelectedWorks());
+                reservation.setCreationDate(new Date());
+                reservation.setDateDay(reservationDate);
+                reservation.setUuid(UUID.randomUUID());
+                reservation.setAssistanceConfirmation(confirmedAssistanceCheckBox.isSelected());
+                String message = String.format("""
+                                New reservation for: %s, %s
+                                Email: %s
+                                Works to get done: %s
+                                Created at: %tF at %tT
+                                Reservation date: %tF at %tT
+                                """,
+                        reservation.getName(),
+                        reservation.getSurname(),
+                        reservation.getEmail(),
+                        reservation.getWorks(),
+                        reservation.getCreationDate(),
+                        reservation.getCreationDate(),
+                        reservationDate,
+                        reservationDate);
 
-        if (this.idReservation == null){
-            showMessage("New reservation entry added");
-        }else{
-            showMessage("Reservation entry updated");
-        }
+                if (this.idReservation == null) {
+                    showMessage("New reservation entry added");
+                } else {
+                    showMessage("Reservation entry updated");
+                }
 
-        System.out.println(message);
-        this.reservationService.saveReservation(reservation);
-        clearForm();
-        listReservations();
-    }
+                System.out.println(message);
+                this.reservationService.saveReservation(reservation);
+                clearForm();
+                listReservations();
+            }}
 
     private void clearForm(){
+        List<Reservation.Work> works = new ArrayList<>();
         this.idReservation = null;
         nameField.setText("");
         surnameField.setText("");
         emailField.setText("");
         confirmedAssistanceCheckBox.setSelected(false);
-        addInitialWorkSelector();
-        datePicker.setSelectedDate(LocalDate.now());
-        timePicker.setSelectedTime(LocalTime.now());
+        handleCustomAddWorkSelector(works);
+        datePicker.clearSelectedDate();
+        timePicker.clearSelectedTime();
+    }
+
+
+    private void handleDelete(){
+        if (this.idReservation == null){
+            showMessage("Please, select an entry to delete");
+        }else{
+            try{
+                reservationService.deleteReservationById(this.idReservation);
+                showMessage("Reservation deleted successfully");
+
+            }catch(Exception e){
+                showMessage("Error deleting reservation: " + e);
+            }
+            clearForm();
+            listReservations();
+        }
+    }
+
+    private Boolean validateInputs(){
+        // Validate name
+        if (nameField.getText() == null || nameField.getText().trim().isEmpty()){
+            showMessage("Name field is empty");
+            return false;
+        }
+
+        // Validate surname
+        if (surnameField.getText() == null || surnameField.getText().trim().isEmpty()){
+            showMessage("Surname field is empty");
+            return false;
+        }
+
+        // Validate email
+        String email = emailField.getText();
+        if (email == null || email.trim().isEmpty()){
+            showMessage("Email field is empty");
+            return false;
+        }
+
+        if (!isValidEmail(email)){
+            showMessage("Invalid email format");
+            return false;
+        }
+
+        // Validate works
+        if (workSelectorRows == null || workSelectorRows.isEmpty()){
+            showMessage("No works added");
+            return false;
+        }
+
+        // Validate time
+        if (timePicker == null || !timePicker.isTimeSelected()){
+            showMessage("No time selected");
+            return false;
+        }
+
+        // Validate date
+        if (datePicker == null || !datePicker.isDateSelected()){
+            showMessage("No date selected");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates email format using regex
+     * Accepts standard email formats like: user@example.com
+     */
+    private boolean isValidEmail(String email){
+        EmailValidator validator = EmailValidator.getInstance();
+        return validator.isValid(email);
     }
 
     private void showMessage(String message){
