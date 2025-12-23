@@ -1,4 +1,4 @@
-package com.reservation.admin.controller;
+package com.reservation.web.controller;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.reservation.common.model.Reservation;
-import com.reservation.admin.service.ReservationService;
+import com.reservation.backend.service.ReservationService;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -35,22 +35,22 @@ public class ReservationController {
     }
 
     @PostMapping
-    public Reservation addReservation(@RequestBody Reservation note) {
-        System.out.println("Received note: " + note);
-        return ReservationService.saveReservation(note);
+    public Reservation addReservation(@RequestBody Reservation reservation) {
+        System.out.println("Received reservation: " + reservation);
+        return ReservationService.saveReservation(reservation);
     }
 
     @PutMapping("/{id}")
-    public Reservation updateReservation(@PathVariable Integer id, @RequestBody Reservation note) {
-    note.setId(id);
-    return ReservationService.saveReservation(note); // Return the saved note
+    public Reservation updateReservation(@PathVariable Integer id, @RequestBody Reservation reservation) {
+        reservation.setId(id);
+    return ReservationService.saveReservation(reservation); // Return the saved reservation
 }
 
     @DeleteMapping("/{id}")
     public void deleteReservation(@PathVariable Integer id) {
-        Reservation note = ReservationService.findReservationById(id);
-        if (note != null) {
-            ReservationService.deleteReservation(note);
+        Reservation reservation = ReservationService.findReservationById(id);
+        if (reservation != null) {
+            ReservationService.deleteReservation(reservation);
         }
     }
 }

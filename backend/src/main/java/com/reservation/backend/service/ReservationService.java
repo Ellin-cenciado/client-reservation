@@ -1,4 +1,4 @@
-package com.reservation.admin.service;
+package com.reservation.backend.service;
 
 import java.util.List;
 
@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.reservation.common.model.Reservation;
-import com.reservation.admin.repository.ReservationRepository;
+import com.reservation.backend.repository.ReservationRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class ReservationService implements IReservationService{
+public class ReservationService implements ReservationServiceImpl {
 
     @Autowired
     private ReservationRepository reservationRepository;
@@ -18,10 +18,7 @@ public class ReservationService implements IReservationService{
     @Override
     @Transactional(readOnly = true)
     public List<Reservation> listReservations() {
-        List<Reservation> reservations = reservationRepository.findAll();
-        // Force initialization while session is still open
-        reservations.forEach(r -> r.getWorks().size());
-        return reservations;
+        return reservationRepository.findAll();
     }
 
     @Override

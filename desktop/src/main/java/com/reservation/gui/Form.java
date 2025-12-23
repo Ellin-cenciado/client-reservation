@@ -1,24 +1,23 @@
-package com.reservation.admin.gui;
+package com.reservation.gui;
 
-import com.reservation.admin.service.IReservationService;
-import com.reservation.admin.service.ReservationService;
+import com.reservation.backend.service.ReservationService;
 import com.reservation.common.model.Reservation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.  Component;
 import raven.datetime.DatePicker;
 import raven.datetime.TimePicker;
 
-import java.text.SimpleDateFormat;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -55,7 +54,7 @@ public class Form extends JFrame {
     private JCheckBox confirmedAssistanceCheckBox;
     private JButton deleteButton;
     private JButton clearButton;
-    private IReservationService reservationService;
+    private final ReservationService reservationService;
     private List<WorkSelectorRow> workSelectorRows;
 
     private Integer idReservation;
@@ -73,10 +72,11 @@ public class Form extends JFrame {
         clearButton.addActionListener(e -> clearForm());
         tableReservation.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) { //add right click & esc key to de-select/clear entry
                 super.mouseClicked(e);
                 loadSelectedReservation();
             }
+
         });
     }
 
