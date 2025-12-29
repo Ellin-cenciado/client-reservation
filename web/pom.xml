@@ -19,6 +19,11 @@
             <artifactId>backend</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.reservation</groupId>
+            <artifactId>common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- Spring Boot Web -->
         <dependency>

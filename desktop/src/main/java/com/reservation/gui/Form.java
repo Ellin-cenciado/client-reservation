@@ -25,6 +25,8 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.List;
 
+import com.reservation.common.model.Work;
+
 
 @Slf4j
 @Component
@@ -38,7 +40,7 @@ public class Form extends JFrame {
     private JTextField nameField;
     private JLabel surnameLabel;
     private JTextField surnameField;
-    private JComboBox<Reservation.Work> workSelector;
+    private JComboBox<Work> workSelector;
     private JButton addWorkButton;
     private JLabel worksLabel;
     private DatePicker datePicker;
@@ -158,8 +160,8 @@ public class Form extends JFrame {
         JPanel rowPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         rowPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
-        JComboBox<Reservation.Work> combo = new JComboBox<>();
-        Arrays.stream(Reservation.Work.values()).forEach(combo::addItem);
+        JComboBox<Work> combo = new JComboBox<>();
+        Arrays.stream(Work.values()).forEach(combo::addItem);
         combo.setPreferredSize(new Dimension(200, 30));
 
         rowPanel.add(combo);
@@ -176,8 +178,8 @@ public class Form extends JFrame {
         rowPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
         // Create new combo box
-        JComboBox<Reservation.Work> combo = new JComboBox<>();
-        Arrays.stream(Reservation.Work.values()).forEach(combo::addItem);
+        JComboBox<Work> combo = new JComboBox<>();
+        Arrays.stream(Work.values()).forEach(combo::addItem);
         combo.setPreferredSize(new Dimension(200, 30));
 
         // Create remove button
@@ -219,10 +221,10 @@ public class Form extends JFrame {
         worksPanel.repaint();
     }
 
-    public List<Reservation.Work> getSelectedWorks() {
-        List<Reservation.Work> works = new ArrayList<>();
+    public List<Work> getSelectedWorks() {
+        List<Work> works = new ArrayList<>();
         for (WorkSelectorRow row : workSelectorRows) {
-            Reservation.Work selected = (Reservation.Work) row.comboBox.getSelectedItem();
+            Work selected = (Work) row.comboBox.getSelectedItem();
             if (selected != null) {
                 works.add(selected);
             }
@@ -267,10 +269,10 @@ public class Form extends JFrame {
 
     private static class WorkSelectorRow {
         JPanel panel;
-        JComboBox<Reservation.Work> comboBox;
+        JComboBox<Work> comboBox;
         JButton removeButton;
 
-        WorkSelectorRow(JPanel panel, JComboBox<Reservation.Work> comboBox, JButton removeButton) {
+        WorkSelectorRow(JPanel panel, JComboBox<Work> comboBox, JButton removeButton) {
             this.panel = panel;
             this.comboBox = comboBox;
             this.removeButton = removeButton;
@@ -309,19 +311,19 @@ public class Form extends JFrame {
         }
     }
 
-    private void handleCustomAddWorkSelector(List<Reservation.Work> works){
+    private void handleCustomAddWorkSelector(List<Work> works){
         // Clear previous combo boxes from the panel and list
         worksPanel.removeAll();
         workSelectorRows.clear();
 
         // Add a combo box for each work in the list
-        for (Reservation.Work work : works) {
+        for (Work work : works) {
             JPanel rowPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
             rowPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
             // Create new combo box
-            JComboBox<Reservation.Work> combo = new JComboBox<>();
-            Arrays.stream(Reservation.Work.values()).forEach(combo::addItem);
+            JComboBox<Work> combo = new JComboBox<>();
+            Arrays.stream(Work.values()).forEach(combo::addItem);
             combo.setPreferredSize(new Dimension(200, 30));
             combo.setSelectedItem(work);  // Set the selected item to this work
 
@@ -403,7 +405,7 @@ public class Form extends JFrame {
             }}
 
     private void clearForm(){
-        List<Reservation.Work> works = new ArrayList<>();
+        List<Work> works = new ArrayList<>();
         this.idReservation = null;
         nameField.setText("");
         surnameField.setText("");

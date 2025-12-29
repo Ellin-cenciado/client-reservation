@@ -15,42 +15,43 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.reservation.common.model.Reservation;
 import com.reservation.backend.service.ReservationService;
+import com.reservation.common.dto.ReservationCreateDTO;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/reservation")
 public class ReservationController {
 
     @Autowired
-    private ReservationService ReservationService;
+    private ReservationService reservationService;
 
     @GetMapping
     public List<Reservation> getAllreservation() {
-        return ReservationService.listReservations();
+        return reservationService.listReservations();
     }
 
     @GetMapping("/{id}")
     public Reservation getReservationById(@PathVariable Integer id) {
-        return ReservationService.findReservationById(id);
+        return reservationService.findReservationById(id);
     }
 
     @PostMapping
-    public Reservation addReservation(@RequestBody Reservation reservation) {
-        System.out.println("Received reservation: " + reservation);
-        return ReservationService.saveReservation(reservation);
+    public Reservation addReservation(@RequestBody ReservationCreateDTO dto) {
+        System.out.println("Received reservation: " + dto);
+        return reservationService.createReservation(dto);
     }
 
     @PutMapping("/{id}")
     public Reservation updateReservation(@PathVariable Integer id, @RequestBody Reservation reservation) {
         reservation.setId(id);
-    return ReservationService.saveReservation(reservation); // Return the saved reservation
+    return reservationService.saveReservation(reservation); // Return the saved reservation
 }
 
     @DeleteMapping("/{id}")
     public void deleteReservation(@PathVariable Integer id) {
-        Reservation reservation = ReservationService.findReservationById(id);
+        Reservation reservation = reservationService.findReservationById(id);
         if (reservation != null) {
-            ReservationService.deleteReservation(reservation);
+            reservationService.deleteReservation(reservation);
         }
     }
 }

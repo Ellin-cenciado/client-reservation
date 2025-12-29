@@ -1,3 +1,5 @@
+import { Work } from "../types/reservation";
+
 function handleSubmit(event: React.FormEvent<HTMLFormElement>) { {
     event.preventDefault();
     const target = event.target as typeof event.target & {
@@ -5,7 +7,7 @@ function handleSubmit(event: React.FormEvent<HTMLFormElement>) { {
         surname: { value: string };
         email: { value: string };
         confirmAssistance: { checked: boolean };
-        works: { value: string };
+        works: { value: Work[] };
     };
     const name = target.name.value;
     const surname = target.surname.value;

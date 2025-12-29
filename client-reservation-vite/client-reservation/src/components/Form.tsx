@@ -8,6 +8,7 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:25565";
 
 function ReservationForm() {
   const [workFields, setWorkFields] = useState<number[]>([0]);
+  const [works, setWorks] = useState<Work[][]>([[]]);
   const [formData, setFormData] = useState({
     name: "",
     surname: "",

@@ -9,6 +9,9 @@ import com.reservation.common.model.Reservation;
 import com.reservation.backend.repository.ReservationRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.reservation.common.dto.ReservationCreateDTO;
+
+
 @Service
 public class ReservationService implements ReservationServiceImpl {
 
@@ -25,7 +28,17 @@ public class ReservationService implements ReservationServiceImpl {
     public Reservation findReservationById(Integer ReservationId) {
         return reservationRepository.findById(ReservationId).orElse(null);
     }
-    
+    public Reservation createReservation(ReservationCreateDTO dto) {
+        Reservation reservation = new Reservation();
+        reservation.setName(dto.getName());
+        reservation.setSurname(dto.getSurname());
+        reservation.setEmail(dto.getEmail());
+        reservation.setWorks(dto.getWorks());
+        reservation.setDateDay(dto.getDateDay());
+        reservation.setAssistanceConfirmation(dto.getAssistanceConfirmation());
+
+        return reservationRepository.save(reservation);
+    }
 
     @Override
     public Reservation saveReservation(Reservation reservation) {

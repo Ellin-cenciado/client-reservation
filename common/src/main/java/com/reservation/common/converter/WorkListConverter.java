@@ -1,6 +1,6 @@
 package com.reservation.common.converter;
 
-import com.reservation.common.model.Reservation.Work;
+import com.reservation.common.model.Work;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
