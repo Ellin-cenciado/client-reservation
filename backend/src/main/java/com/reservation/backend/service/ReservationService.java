@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.reservation.common.model.Reservation;
 import com.reservation.backend.repository.ReservationRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +19,7 @@ public class ReservationService implements ReservationServiceImpl {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Reservation> listReservations() {
+    public List<ReservationCreateDTO> listReservations() {
         return reservationRepository.findAll();
     }
 
@@ -46,7 +45,7 @@ public class ReservationService implements ReservationServiceImpl {
 }
 
     @Override
-    public void deleteReservation(Reservation Reservation) {
+    public void deleteReservation(ReservationCreateDTO Reservation) {
         reservationRepository.delete(Reservation);
     }
     

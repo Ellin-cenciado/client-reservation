@@ -49,7 +49,7 @@ public class ReservationController {
 
     @DeleteMapping("/{id}")
     public void deleteReservation(@PathVariable Integer id) {
-        Reservation reservation = reservationService.findReservationById(id);
+        ReservationCreateDTO reservation = reservationService.findReservationById(id);
         if (reservation != null) {
             reservationService.deleteReservation(reservation);
         }
