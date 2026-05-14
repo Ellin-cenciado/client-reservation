@@ -1,0 +1,39 @@
+# ----------------------------------------------------------------------
+# Environment Variables (NEVER commit secrets or local environments!)
+# ----------------------------------------------------------------------
+.env
+.env.development
+.env.*.local
+
+# ----------------------------------------------------------------------
+# Java & Maven Build Output
+# ----------------------------------------------------------------------
+target/
+*/target/
+*/*/target/
+
+# ----------------------------------------------------------------------
+# IDE & Editor Configs
+# ----------------------------------------------------------------------
+*.iml
+.idea/
+.vscode/
+
+# ----------------------------------------------------------------------
+# Node.js / React / Vite Dependencies & Build Output
+# ----------------------------------------------------------------------
+node_modules/
+dist/
+dist-ssr/
+npm-debug.log*
+
+# ----------------------------------------------------------------------
+# Ignore Frontend Source Files inside the Spring/Java Static Folder
+# ----------------------------------------------------------------------
+web/src/main/resources/static/src/
+web/src/main/resources/static/public/
+web/src/main/resources/static/package*.json
+web/src/main/resources/static/tsconfig*.json
+web/src/main/resources/static/vite.config.ts
+web/src/main/resources/static/eslint.config.js
+web/src/main/resources/static/README.md
