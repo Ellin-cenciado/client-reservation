@@ -8,18 +8,21 @@ import org.springframework.stereotype.Service;
 import com.reservation.backend.repository.ReservationRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.reservation.common.model.Reservation;
 import com.reservation.common.dto.ReservationCreateDTO;
-
 
 @Service
 public class ReservationService implements ReservationServiceImpl {
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private ReservationRepository reservationRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public List<ReservationCreateDTO> listReservations() {
+    public List<Reservation> listReservations() {
         return reservationRepository.findAll();
     }
 
@@ -41,11 +44,13 @@ public class ReservationService implements ReservationServiceImpl {
 
     @Override
     public Reservation saveReservation(Reservation reservation) {
-    return reservationRepository.save(reservation);
+        Reservation savedReservation = reservationRepository.save(reservation);
+        emailService.sendReservationConfirmation(savedReservation);
+        return savedReservation;
 }
 
     @Override
-    public void deleteReservation(ReservationCreateDTO Reservation) {
+    public void deleteReservation(Reservation Reservation) {
         reservationRepository.delete(Reservation);
     }
     

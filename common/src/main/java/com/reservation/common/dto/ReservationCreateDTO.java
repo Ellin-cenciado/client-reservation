@@ -2,20 +2,21 @@ package com.reservation.common.dto;
 
 import java.util.Date;
 import java.util.List;
-
 import com.reservation.common.model.Work;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.Email;
+import lombok.*;
 
-@Setter
-@Getter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ReservationCreateDTO {
-
     private String name;
     private String surname;
+
+    @Email
     private String email;
+
     private List<Work> works;
     private Date dateDay;
     private Boolean assistanceConfirmation;
-
 }
