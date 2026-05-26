@@ -4,16 +4,16 @@ import { Work, getWorkOptions } from "../types/reservation";
 import type { ReservationCreateDTO } from "../types/reservation";
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:25565";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 function ReservationForm() {
   const [workFields, setWorkFields] = useState<number[]>([0]);
-  const [works, setWorks] = useState<Work[][]>([[]]);
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
     email: "",
     dateDay: "",
+    timeHour: "",
     assistanceConfirmation: false
   });
 
@@ -29,19 +29,19 @@ function ReservationForm() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     const formElement = e.currentTarget;
     const formDataObj = new FormData(formElement);
-    
+
     // Collect all selected works
     const works = formDataObj.getAll("works") as Work[];
-    
+
     const reservation: ReservationCreateDTO = {
       name: formData.name,
       surname: formData.surname,
       email: formData.email,
       works: works,
-      dateDay: formData.dateDay || undefined,
+      dateDay: formData.dateDay + "T" + formData.timeHour || undefined,
       assistanceConfirmation: formData.assistanceConfirmation
     };
 
@@ -49,7 +49,7 @@ function ReservationForm() {
       const response = await axios.post(`${API_URL}/api/reservation`, reservation);
       console.log("Reservation created:", response.data);
       alert("Reservation created successfully!");
-      
+
       // Reset form
       formElement.reset();
       setWorkFields([0]);
@@ -58,6 +58,7 @@ function ReservationForm() {
         surname: "",
         email: "",
         dateDay: "",
+        timeHour: "",
         assistanceConfirmation: false
       });
     } catch (error) {
@@ -77,16 +78,16 @@ function ReservationForm() {
   const workOptions = getWorkOptions();
 
   return (
-    <div className="container mt-4">
-      <h2>New Reservation</h2>
+    <div className="container mt-4 text-left">
+      <h2 className="text-center mb-3">New Reservation</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label htmlFor="name" className="form-label">
-            Name *
+          <label htmlFor="name" className="form-label pr-2">
+            Name
           </label>
           <input
             type="text"
-            className="form-control"
+            className="bg-slate-950 transition duration-300 border-2 border-blue-300/30 rounded-md hover:border-blue-300/50 focus:border-blue-300 focus:ring focus:ring-blue-300/50 form-control"
             id="name"
             name="name"
             value={formData.name}
@@ -96,12 +97,12 @@ function ReservationForm() {
         </div>
 
         <div className="mb-3">
-          <label htmlFor="surname" className="form-label">
-            Surname *
+          <label htmlFor="surname" className="form-label pr-2">
+            Surname
           </label>
           <input
             type="text"
-            className="form-control"
+            className="bg-slate-950 transition duration-300 border-2 border-blue-300/30 rounded-md hover:border-blue-300/50 focus:border-blue-300 focus:ring focus:ring-blue-300/50 form-control"
             id="surname"
             name="surname"
             value={formData.surname}
@@ -111,12 +112,12 @@ function ReservationForm() {
         </div>
 
         <div className="mb-3">
-          <label htmlFor="email" className="form-label">
-            Email *
+          <label htmlFor="email" className="form-label pr-2">
+            Email
           </label>
           <input
             type="email"
-            className="form-control"
+            className="bg-slate-950 transition duration-300 border-2 border-blue-300/30 rounded-md hover:border-blue-300/50 focus:border-blue-300 focus:ring focus:ring-blue-300/50 form-control"
             id="email"
             name="email"
             value={formData.email}
@@ -125,29 +126,50 @@ function ReservationForm() {
           />
         </div>
 
-        <div className="mb-3">
-          <label htmlFor="dateDay" className="form-label">
-            Date
-          </label>
-          <input
-            type="date"
-            className="form-control"
-            id="dateDay"
-            name="dateDay"
-            value={formData.dateDay}
-            onChange={handleChange}
-          />
+        <div className="row mb-3">
+          <div className="col-md-6">
+            <label htmlFor="dateDay" className="form-label">
+              Date
+            </label>
+            <input
+              type="date"
+              className="form-control"
+              id="dateDay"
+              name="dateDay"
+              value={formData.dateDay}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="col-md-6">
+            <label htmlFor="timeHour" className="form-label">
+              Time
+            </label>
+            <input
+              type="time"
+              className="form-control"
+              id="timeHour"
+              name="timeHour"
+              step="900"
+              min="09:00"
+              max="18:00"
+              value={formData.timeHour}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Works *</label>
+          <label className="form-label pl-24">Works</label>
           {workFields.map((fieldId) => (
-            <div key={fieldId} className="input-group mb-2">
+            <div key={fieldId} className="input-group my-3">
               <label className="input-group-text" htmlFor={`workSelect-${fieldId}`}>
                 Choose work type:
               </label>
               <select
-                className="form-select"
+                className="bg-slate-950 p-1 transition duration-300 border-2 border-blue-300/30 rounded-md hover:border-blue-300/50 focus:border-blue-300 focus:ring focus:ring-blue-300/50 form-control"
                 id={`workSelect-${fieldId}`}
                 name="works"
                 required
@@ -183,7 +205,7 @@ function ReservationForm() {
         <div className="mb-3 form-check">
           <input
             type="checkbox"
-            className="form-check-input"
+            className="form-check-input mx-3"
             id="assistanceConfirmation"
             name="assistanceConfirmation"
             checked={formData.assistanceConfirmation}

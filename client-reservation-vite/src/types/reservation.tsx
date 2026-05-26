@@ -35,7 +35,7 @@ export interface Reservation {
   worksAmount?: number;
   works: Work[];
   creationDate?: string; // ISO date string from backend
-  dateDay?: string; // ISO date string
+  dateDay: string; // ISO date string
   email: string;
   assistanceConfirmation: boolean;
 }
